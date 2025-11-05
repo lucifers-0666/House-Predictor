@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏰 Luxury House Price Predictor | AI-Powered</title>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+    
+    <!-- Google Fonts -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
+        * { font-family: 'Poppins', sans-serif; }
+    </style>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 text-slate-100 min-h-screen">
+    
+    <!-- Animated Background -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-0 left-0 w-96 h-96 bg-green-900/20 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-yellow-900/20 rounded-full blur-3xl"></div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="relative z-50 backdrop-blur-md bg-slate-950/50 border-b border-yellow-900/30 sticky top-0">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-green-700 to-yellow-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-gem text-white text-lg"></i>
+                </div>
+                <h1 class="text-2xl font-bold bg-gradient-to-r from-green-400 to-yellow-400 bg-clip-text text-transparent">
+                    Luxury House Predictor
+                </h1>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <button id="darkModeToggle" class="p-2 hover:bg-green-700/30 rounded-lg transition-all duration-300" title="Theme">
+                    <i class="fas fa-moon text-yellow-500"></i>
+                </button>
+                <button onclick="openHistoryModal()" class="p-2 hover:bg-green-700/30 rounded-lg transition-all duration-300" title="History">
+                    <i class="fas fa-history text-yellow-500"></i>
+                </button>
+                <button id="exportBtn" class="p-2 hover:bg-green-700/30 rounded-lg transition-all duration-300" title="Export CSV">
+                    <i class="fas fa-file-csv text-yellow-500"></i>
+                </button>
+                <button onclick="openAPIModal()" class="p-2 hover:bg-green-700/30 rounded-lg transition-all duration-300" title="API">
+                    <i class="fas fa-code text-yellow-500"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="relative z-10 max-w-7xl mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Main Content (Left Side) -->
+            <div class="lg:col-span-2 space-y-6">
+                
+                <!-- Hero Card -->
+                <div class="premium-glass rounded-3xl p-8 border border-yellow-900/20 backdrop-blur-xl hover-glow transition-all duration-500">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-600 to-yellow-600 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-wand-magic-sparkles text-2xl text-white"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-4xl font-bold bg-gradient-to-r from-green-400 to-yellow-400 bg-clip-text text-transparent">
+                                AI Price Prediction
+                            </h2>
+                            <p class="text-slate-400 text-sm">Powered by Advanced Machine Learning</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 leading-relaxed">
+                        Enter California housing details for instant AI-powered price predictions with deep learning analytics
+                    </p>
+                </div>
+
+                <!-- Tabs -->
+                <div class="premium-glass rounded-3xl border border-yellow-900/20 overflow-hidden">
+                    <div class="flex border-b border-yellow-900/20 overflow-x-auto">
+                        <button class="tab-btn active flex-1 min-w-max py-4 px-6 text-center font-600 transition-all duration-300 border-b-2 border-yellow-500" data-tab="single">
+                            <i class="fas fa-home mr-2"></i>Single
+                        </button>
+                        <button class="tab-btn flex-1 min-w-max py-4 px-6 text-center font-600 transition-all duration-300 border-b-2 border-transparent hover:border-yellow-700" data-tab="batch">
+                            <i class="fas fa-rocket mr-2"></i>Batch
+                        </button>
+                        <button class="tab-btn flex-1 min-w-max py-4 px-6 text-center font-600 transition-all duration-300 border-b-2 border-transparent hover:border-yellow-700" data-tab="analytics">
+                            <i class="fas fa-chart-line mr-2"></i>Analytics
+                        </button>
+                        <button class="tab-btn flex-1 min-w-max py-4 px-6 text-center font-600 transition-all duration-300 border-b-2 border-transparent hover:border-yellow-700" data-tab="insights">
+                            <i class="fas fa-lightbulb mr-2"></i>Insights
+                        </button>
+                        <button class="tab-btn flex-1 min-w-max py-4 px-6 text-center font-600 transition-all duration-300 border-b-2 border-transparent hover:border-yellow-700" data-tab="model">
+                            <i class="fas fa-brain mr-2"></i>Model
+                        </button>
+                    </div>
+
+                    <div class="p-8">
+                        
+                        <!-- Single Prediction Tab with SLIDERS -->
+                        <div class="tab-content active" id="single">
+                            <form id="predictionForm" class="space-y-8">
+                                
+                                <!-- Median Income Slider -->
+                                <div>
+                                    <label class="block text-sm font-bold text-yellow-400 mb-3">
+                                        <i class="fas fa-dollar-sign mr-2"></i>Median Income: <span id="MedInc_val" class="text-green-400">8.3</span>x$10k
+                                    </label>
+                                    <input type="range" id="MedInc" name="MedInc" min="1" max="15" step="0.1" value="8.3" class="premium-slider w-full">
+                                    <div class="flex justify-between text-xs text-slate-500 mt-1">
+                                        <span>$10k</span>
+                                        <span>$150k</span>
+                                    </div>
+                                </div>
+
+                                <!-- House Age Slider -->
+                                <div>
+                                    <label class="block text-sm font-bold text-yellow-400 mb-3">
+                                        <i class="fas fa-calendar mr-2"></i>House Age: <span id="HouseAge_val" class="text-green-400">41</span> years
+                                    </label>
+                                    <input type="range" id="HouseAge" name="HouseAge" min="1" max="52" step="1" value="41" class="premium-slider w-full">
+                                    <div class="flex justify-between text-xs text-slate-500 mt-1">
+                                        <span>1 year</span>
+                                        <span>52 years</span>
+                                    </div>
+                                </div>
+
+                                <!-- Average Rooms Slider -->
+                                <div>
+                                    <label class="block text-sm font-bold text-yellow-400 mb-3">
+                                        <i class="fas fa-door-open mr-2"></i>Average Rooms: <span id="AveRooms_val" class="text-green-400">6.98</span>
+                                    </label>
+                                    <input type="range" id="AveRooms" name="AveRooms" min="1" max="10" step="0.1" value="6.98" class="premium-slider w-full">
+                                    <div class="flex justify-between text-xs text-slate-500 mt-1">
+                                        <span>1</span>
+                                        <span>10</span>
+                                    </div>
+                                </div>
+
+                                <!-- Average Bedrooms Slider -->
+                                <div>
+                                    <label class="block text-sm font-bold text-yellow-400 mb-3">
+                                        <i class="fas fa-bed mr-2"></i>Average Bedrooms: <span id="AveBedrms_val" class="text-green-400">1.02</span>
+                                    </label>
+                                    <input type="range" id="AveBedrms" name="AveBedrms" min="0.5" max="6" step="0.1" value="1.02" class="premium-slider w-full">
+                                    <div class="flex justify-between text-xs text-slate-500 mt-1">
+                                        <span>0.5</span>
+                                        <span>6</span>
+                                    </div>
+                                </div>
+
+                                <!-- Population Slider -->
+                                <div>
+                                    <label class="block text-sm font-bold text-yellow-400 mb-3">
+                                        <i class="fas fa-users mr-2"></i>Population: <span id="Population_val" class="text-green-400">322</span>
+                                    </label>
+                                    <input type="range" id="Population" name="Population" min="1" max="35000" step="100" value="322" class="premium-slider w-full">
+                                    <div class="flex justify-between text-xs text-slate-500 mt-1">
+                                        <span>1</span>
+                                        <span>35k</span>
+                                    </div>
+                                </div>
+
+                                <!-- Average Occupancy Slider -->
+                                <div>
+                                    <label class="block text-sm font-bold text-yellow-400 mb-3">
+                                        <i class="fas fa-person-booth mr-2"></i>Avg Occupancy: <span id="AveOccup_val" class="text-green-400">2.56</span>
+                                    </label>
+                                    <input type="range" id="AveOccup" name="AveOccup" min="0.5" max="10" step="0.1" value="2.56" class="premium-slider w-full">
+                                    <div class="flex justify-between text-xs text-slate-500 mt-1">
+                                        <span>0.5</span>
+                                        <span>10</span>
+                                    </div>
+                                </div>
+
+                                <!-- Latitude Slider -->
+                                <div>
+                                    <label class="block text-sm font-bold text-yellow-400 mb-3">
+                                        <i class="fas fa-location-dot mr-2"></i>Latitude: <span id="Latitude_val" class="text-green-400">37.88</span>
+                                    </label>
+                                    <input type="range" id="Latitude" name="Latitude" min="32" max="42" step="0.01" value="37.88" class="premium-slider w-full">
+                                    <div class="flex justify-between text-xs text-slate-500 mt-1">
+                                        <span>32°</span>
+                                        <span>42°</span>
+                                    </div>
+                                </div>
+
+                                <!-- Longitude Slider -->
+                                <div>
+                                    <label class="block text-sm font-bold text-yellow-400 mb-3">
+                                        <i class="fas fa-location-dot mr-2"></i>Longitude: <span id="Longitude_val" class="text-green-400">-122.23</span>
+                                    </label>
+                                    <input type="range" id="Longitude" name="Longitude" min="-125" max="-114" step="0.01" value="-122.23" class="premium-slider w-full">
+                                    <div class="flex justify-between text-xs text-slate-500 mt-1">
+                                        <span>-125°</span>
+                                        <span>-114°</span>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <button type="submit" class="premium-btn-primary w-full py-3">
+                                        <i class="fas fa-wand-magic-sparkles mr-2"></i>Predict Price
+                                    </button>
+                                    <button type="button" onclick="fillSampleData()" class="premium-btn-secondary w-full py-3">
+                                        <i class="fas fa-fill-drip mr-2"></i>Sample Data
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Batch Prediction Tab -->
+                        <div class="tab-content hidden" id="batch">
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-bold text-yellow-400">
+                                    <i class="fas fa-list mr-2"></i>Batch Predictions (JSON)
+                                </h3>
+                                <textarea id="batchInput" class="premium-input w-full h-48" 
+                                          placeholder='[{"MedInc": 8.3, "HouseAge": 41, "AveRooms": 6.98, "AveBedrms": 1.02, "Population": 322, "AveOccup": 2.56, "Latitude": 37.88, "Longitude": -122.23}]'></textarea>
+                                <button onclick="batchPredict()" class="premium-btn-primary w-full py-3">
+                                    <i class="fas fa-rocket mr-2"></i>Predict Batch
+                                </button>
+                                <div id="batchResults" class="mt-4"></div>
+                            </div>
+                        </div>
+
+                        <!-- Analytics Tab -->
+                        <div class="tab-content hidden" id="analytics">
+                            <div class="space-y-6">
+                                <h3 class="text-lg font-bold text-yellow-400">
+                                    <i class="fas fa-chart-line mr-2"></i>Analytics Dashboard
+                                </h3>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="bg-gradient-to-br from-green-900/20 to-yellow-900/20 p-4 rounded-xl border border-yellow-900/20">
+                                        <div class="text-slate-400 text-sm">Min Price</div>
+                                        <div id="minPred" class="text-2xl font-bold text-green-400">$0</div>
+                                    </div>
+                                    <div class="bg-gradient-to-br from-green-900/20 to-yellow-900/20 p-4 rounded-xl border border-yellow-900/20">
+                                        <div class="text-slate-400 text-sm">Max Price</div>
+                                        <div id="maxPred" class="text-2xl font-bold text-yellow-400">$0</div>
+                                    </div>
+                                </div>
+                                <div style="position: relative; height: 300px;">
+                                    <canvas id="analyticsChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Insights Tab -->
+                        <div class="tab-content hidden" id="insights">
+                            <div class="space-y-6">
+                                <h3 class="text-lg font-bold text-yellow-400">
+                                    <i class="fas fa-brain mr-2"></i>AI Insights & Recommendations
+                                </h3>
+                                <div id="insightsContent" class="space-y-3">
+                                    <p class="text-slate-400">Make a prediction to see insights</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Model Info Tab -->
+                        <div class="tab-content hidden" id="model">
+                            <div id="modelInfoContent" class="space-y-4"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar (Right Side) -->
+            <div class="space-y-6">
+                
+                <!-- Result Card -->
+                <div id="resultCard" class="hidden">
+                    <div class="premium-glass rounded-3xl border border-yellow-900/20 overflow-hidden hover-glow transition-all duration-500">
+                        <div class="bg-gradient-to-r from-green-600 to-yellow-600 p-6">
+                            <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                                <i class="fas fa-bullseye"></i>Result
+                            </h3>
+                        </div>
+                        <div class="p-8 text-center">
+                            <p class="text-slate-400 text-sm mb-2">Estimated Price</p>
+                            <h2 id="predictedPrice" class="text-5xl font-bold bg-gradient-to-r from-green-400 to-yellow-400 bg-clip-text text-transparent mb-4">
+                                $0
+                            </h2>
+                            <div id="predictionTime" class="text-slate-500 text-xs"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Features Chart -->
+                <div id="featuresCard" class="hidden">
+                    <div class="premium-glass rounded-3xl border border-yellow-900/20 overflow-hidden">
+                        <div class="bg-gradient-to-r from-green-600 to-yellow-600 p-4">
+                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                <i class="fas fa-chart-bar"></i>Top Features
+                            </h3>
+                        </div>
+                        <div class="p-4" style="position: relative; height: 250px;">
+                            <canvas id="featuresChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Options -->
+                <div id="exportCard" class="hidden">
+                    <div class="premium-glass rounded-3xl border border-yellow-900/20 overflow-hidden">
+                        <div class="bg-gradient-to-r from-green-600 to-yellow-600 p-6">
+                            <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                                <i class="fas fa-download"></i>Export
+                            </h3>
+                        </div>
+                        <div class="p-6 space-y-3">
+                            <button onclick="exportPDF()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300">
+                                <i class="fas fa-file-pdf mr-2"></i>PDF Report
+                            </button>
+                            <button id="exportCSVBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300">
+                                <i class="fas fa-file-csv mr-2"></i>CSV Export
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics Card -->
+                <div class="premium-glass rounded-3xl border border-yellow-900/20 overflow-hidden">
+                    <div class="bg-gradient-to-r from-green-600 to-yellow-600 p-6">
+                        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fas fa-chart-pie"></i>Stats
+                        </h3>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="bg-gradient-to-r from-green-900/30 to-yellow-900/30 p-4 rounded-xl border border-yellow-900/20">
+                            <div class="text-slate-400 text-xs uppercase">Total Predictions</div>
+                            <div id="totalPreds" class="text-3xl font-bold text-green-400">0</div>
+                        </div>
+                        <div class="bg-gradient-to-r from-green-900/30 to-yellow-900/30 p-4 rounded-xl border border-yellow-900/20">
+                            <div class="text-slate-400 text-xs uppercase">Avg Price</div>
+                            <div id="avgPrice" class="text-3xl font-bold text-yellow-400">$0</div>
+                        </div>
+                        <button onclick="clearHistory()" class="w-full bg-red-900/30 hover:bg-red-800/40 text-red-400 font-bold py-2 px-4 rounded-lg transition-all duration-300 border border-red-900/50">
+                            <i class="fas fa-trash mr-2"></i>Clear
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Tips -->
+                <div class="premium-glass rounded-3xl border border-yellow-900/20 p-6">
+                    <h3 class="text-lg font-bold text-yellow-400 mb-4 flex items-center gap-2">
+                        <i class="fas fa-lightbulb"></i>Tips
+                    </h3>
+                    <ul class="space-y-2 text-slate-400 text-sm">
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Use sliders for easy input</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Check insights after prediction</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Export PDF for reports</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Batch predictions supported</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div id="historyModal" class="fixed inset-0 bg-black/50 backdrop-blur hidden z-50 flex items-center justify-center p-4">
+        <div class="premium-glass rounded-3xl max-w-2xl w-full border border-yellow-900/20 max-h-96 overflow-y-auto">
+            <div class="sticky top-0 bg-gradient-to-r from-green-600 to-yellow-600 p-6 flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-white">History</h2>
+                <button onclick="closeModal('historyModal')" class="text-2xl hover:text-slate-200">×</button>
+            </div>
+            <div id="historyContent" class="p-6 space-y-3"></div>
+        </div>
+    </div>
+
+    <!-- API Modal -->
+    <div id="apiModal" class="fixed inset-0 bg-black/50 backdrop-blur hidden z-50 flex items-center justify-center p-4">
+        <div class="premium-glass rounded-3xl max-w-3xl w-full border border-yellow-900/20 max-h-96 overflow-y-auto">
+            <div class="sticky top-0 bg-gradient-to-r from-green-600 to-yellow-600 p-6 flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-white">API Docs</h2>
+                <button onclick="closeModal('apiModal')" class="text-2xl hover:text-slate-200">×</button>
+            </div>
+            <div class="p-6 space-y-4 text-sm font-mono text-slate-300">
+                <div>
+                    <h3 class="text-yellow-400 font-bold mb-2">POST /api/predict</h3>
+                    <pre class="bg-slate-950/50 p-3 rounded overflow-x-auto text-xs">{"MedInc": 8.3, "HouseAge": 41, ...}</pre>
+                </div>
+                <div>
+                    <h3 class="text-yellow-400 font-bold mb-2">POST /api/batch-predict</h3>
+                    <pre class="bg-slate-950/50 p-3 rounded overflow-x-auto text-xs">{"houses": [{...}]}</pre>
+                </div>
+                <div>
+                    <h3 class="text-yellow-400 font-bold mb-2">GET /api/export-pdf</h3>
+                    <p class="text-slate-400">Download predictions as PDF</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-yellow-900/30 bg-slate-950/50 backdrop-blur-md py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-slate-400">
+            <p class="flex items-center justify-center gap-2 mb-2">
+                <i class="fas fa-gem text-yellow-500"></i>
+                <span>Luxury House Price Predictor</span>
+            </p>
+            <small>© 2025 AI-Powered System | Advanced ML</small>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
